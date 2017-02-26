@@ -1,5 +1,6 @@
 import csv
 import cv2
+import numpy as np
 
 lines = []
 with open('../data/driving_log.csv') as csvfile:
@@ -9,6 +10,7 @@ with open('../data/driving_log.csv') as csvfile:
 
 images = []
 measurements = []
+lines = lines[1:]
 for line in lines:
   source_path = line[0]
   filename = source_path.split('/')[-1]
