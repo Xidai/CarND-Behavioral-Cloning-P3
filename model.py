@@ -33,7 +33,7 @@ y_train = np.array(augmented_measurements)
 
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Cropping2D
-from keras.layers import Convolution2D, MaxPooling2D
+from keras.layers import Convolution2D, MaxPooling2D, Lambda
 
 model = Sequential()
 model.add(Lambda(lambda x: x / 255.0, input_shape=(160, 320, 3)))
