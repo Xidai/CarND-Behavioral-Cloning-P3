@@ -1,24 +1,28 @@
 import csv
 import cv2
 import numpy as np
+import os
 
-lines = []
-with open('../data/driving_log.csv') as csvfile:
-  reader = csv.reader(csvfile)
-  for line in reader:
-    lines.append(line)
-
+DATA_PATH = '../data/'
 images = []
 measurements = []
-lines = lines[1:]
-for line in lines:
-  source_path = line[0]
-  filename = source_path.split('/')[-1]
-  current_path = '../data/IMG/' + filename
-  image = cv2.imread(current_path)
-  images.append(image)
-  measurement = float(line[3])
-  measurements.append(measurement)
+for path in os.listdir(DATA_PATH):
+  lines = []
+  basepath = DATA_PATH + path
+  filepath = basepath + '/driving_log.csv'
+  with open(filepath) as csvfile:
+    reader = csv.reader(csvfile)
+    for line in reader:
+      lines.append(line)
+  lines = lines[1:]
+  for line in lines:
+    source_path = line[0]
+    filename = source_path.split('/')[-1]
+    current_path = basepath + '/IMG/' + filename
+    image = cv2.imread(current_path)
+    images.append(image)
+    measurement = float(line[3])
+    measurements.append(measurement)
 
 augmented_images = []
 augmented_measurements = []
