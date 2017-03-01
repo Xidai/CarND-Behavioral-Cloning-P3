@@ -11,7 +11,6 @@ DATA_PATH = '../data/'
 images = []
 measurements = []
 def _read_in_data (path, steering, correction):
-  print(path)
   image = cv2.imread(path)
   images.append(image)
   measurement = float(line[3])
