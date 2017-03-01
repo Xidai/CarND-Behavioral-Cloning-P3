@@ -3,9 +3,23 @@ import cv2
 import numpy as np
 import os
 
+# parameters to be tuned
+correction = 0.2
+epochs = 9
+
 DATA_PATH = '../data/'
 images = []
 measurements = []
+def _read_in_data (path, steering, correction):
+  print(path)
+  image = cv2.imread(path)
+  images.append(image)
+  measurement = float(line[3])
+  measurements.append(measurement)
+
+def _get_path (basepath, raw_path):
+  return basepath + '/IMG/' + raw_path.split('/')[-1]
+
 for path in os.listdir(DATA_PATH):
   lines = []
   basepath = DATA_PATH + path
@@ -16,13 +30,11 @@ for path in os.listdir(DATA_PATH):
       lines.append(line)
   lines = lines[1:]
   for line in lines:
-    source_path = line[0]
-    filename = source_path.split('/')[-1]
-    current_path = basepath + '/IMG/' + filename
-    image = cv2.imread(current_path)
-    images.append(image)
-    measurement = float(line[3])
-    measurements.append(measurement)
+    steering = line[3]
+
+    _read_in_data(_get_path(basepath, line[0]), steering, 0)
+    _read_in_data(_get_path(basepath, line[1]), steering, correction)
+    _read_in_data(_get_path(basepath, line[2]), steering, -correction)
 
 augmented_images = []
 augmented_measurements = []
@@ -55,6 +67,6 @@ model.add(Dense(10))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=9)
+model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=epochs)
 
 model.save('model.h5')
