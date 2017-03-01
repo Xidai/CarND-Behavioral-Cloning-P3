@@ -2,10 +2,11 @@ import csv
 import cv2
 import numpy as np
 import os
+import math
 
 # parameters to be tuned
 correction = 0.2
-epochs = 9
+epochs = 3
 
 DATA_PATH = '../data/'
 images = []
@@ -43,8 +44,14 @@ for image, measurement in zip(images, measurements):
   augmented_images.append(cv2.flip(image, 1))
   augmented_measurements.append(measurement * -1.0)
 
-X_train = np.array(augmented_images)
-y_train = np.array(augmented_measurements)
+#X_train = np.array(augmented_images)
+#y_train = np.array(augmented_measurements)
+total = len(augmented_images)
+def myGenerator ():
+  while 1:
+    for i in range(math.ceil(total / 32)):
+      yield np.array(augmented_images[i* 32:(i+1)*32]), np.array(augmented_measurements[i*32:(i+1)*32])
+
 
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Cropping2D, Dropout
@@ -66,6 +73,8 @@ model.add(Dense(10))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=epochs)
+model.fit_generator(myGenerator(), samples_per_epoch = total, callbacks=[], validation_data=None, nb_epoch=epochs)
+
+#model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=epochs)
 
 model.save('model.h5')
