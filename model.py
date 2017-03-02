@@ -5,7 +5,7 @@ import os
 
 # parameters to be tuned
 correction = 0.7
-epochs = 5
+epochs = 9
 keep_prob = 0.3
 
 DATA_PATH = '../data/'
